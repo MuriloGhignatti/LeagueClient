@@ -1,13 +1,13 @@
 const tools = document.getElementsByClassName("leagueTool")
 const loadingSpinner = document.getElementById("waitingLeagueSpinner")
 const chatSwitch = document.getElementById("chatSwitch")
+const clickMe = document.getElementById("clickMeButton")
 
 chatSwitch.onclick = onSwitchChatClicked
   
 function onSwitchChatClicked(){
-    window.api.send('switchButtonClicked', chatSwitch.value)
+    window.api.send('switchButtonClicked', chatSwitch.checked)
 }
-
 
 window.api.receive('applicationStart', () => {
     console.log("Received applicationStart message")

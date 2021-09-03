@@ -56,21 +56,36 @@ app.on('activate', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-ipcMain.on('switchButtonClicked', (event, activateChat) => {
+ipcMain.on('switchButtonClicked', async (event, activateChat) => {
   console.log('Received switchButtonClicked message')
   if(activateChat){
-    const response = request({
+    const response = await request({
       method: 'PUT',
       url: '/lol-chat/v1/me',
-      body: '{"availability": "chat"}'
+      body: {"availability": "chat"}
     }, connection)
+    console.log("Activating chat")
   } else {
-    const response = request({
+    const response = await request({
       method: 'PUT',
       url: '/lol-chat/v1/me',
-      body: '{"availability": "offline"}'
+      body: {"availability":"offline"}
     }, connection)
+    const response2 = await request({
+      method: 'GET',
+      url: '/lol-chat/v1/me'
+    }, connection)
+    console.log(await response2.text())
+    console.log("Deactivating chat")
   }
+})
+
+ipcMain.on('clickMeButtonClicked', () => {
+  console.log("clickMeButtonClicked received")
+  const response = request({
+    method: 'POST',
+    url: '/lol-lobby/v2/lobby/matchmaking/search'
+  }, connection)
 })
 
 async function onStartApplication(){
@@ -82,4 +97,5 @@ async function onStartApplication(){
   })
   mainWindow.webContents.send('leagueFound', null)
   console.log("league found!")
+  console.log(connection)
 }
